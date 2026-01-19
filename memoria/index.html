@@ -1,135 +1,731 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>In memoria di Filippo Masi Trevisini</title>
+  <meta charset="UTF-8" />
 
-  <!-- SEO di base -->
+  <!-- =========================
+       SEO MINIMA (pulita)
+       ========================= -->
+  <title>In memoria di Filippo Masi Trevisini</title>
   <meta name="description" content="Pagina commemorativa dedicata a Filippo Masi Trevisini. Un luogo di memoria e di ricordo, accessibile tramite QR code accanto all’albero a lui dedicato.">
   <link rel="canonical" href="https://filippomasitrevisini.org/memoria/">
 
-  <!-- Open Graph (condivisione link) -->
+  <!-- Open Graph (anteprima WhatsApp / social) -->
   <meta property="og:title" content="In memoria di Filippo Masi Trevisini">
-  <meta property="og:description" content="Pagina commemorativa dedicata a Filippo Masi Trevisini. Un luogo di memoria e di ricordo.">
+  <meta property="og:description" content="Pagina commemorativa dedicata a Filippo Masi Trevisini.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://filippomasitrevisini.org/memoria/">
 
-  <!-- Responsive -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Stile sobrio -->
   <style>
+    /* =========================
+       STILE BASE (sobrio)
+       ========================= */
+    :root {
+      --bg: #fafafa;
+      --text: #1f1f1f;
+      --muted: #666;
+      --card: #ffffff;
+      --border: #e8e8e8;
+      --shadow: 0 8px 24px rgba(0,0,0,0.06);
+      --radius: 14px;
+
+      /* Per scroll morbido + offset header */
+      --header-h: 64px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth; /* transizione morbida quando usi anchor link */
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", serif;
       margin: 0;
-      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.7;
-      background: #fafafa;
-      color: #222;
+      background: var(--bg);
+      color: var(--text);
     }
 
+    a { color: inherit; }
+
+    /* =========================
+       HEADER + BURGER MENU
+       ========================= */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: var(--header-h);
+      background: rgba(250,250,250,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      height: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand .title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .brand .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Bottone burger */
+    .burger {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .burger:focus { outline: 2px solid rgba(0,0,0,0.12); outline-offset: 2px; }
+    .burger-lines {
+      width: 18px;
+      height: 12px;
+      position: relative;
+      display: inline-block;
+    }
+    .burger-lines span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+    }
+    .burger-lines span:nth-child(1) { top: 0; }
+    .burger-lines span:nth-child(2) { top: 5px; }
+    .burger-lines span:nth-child(3) { top: 10px; }
+    .burger-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Overlay scuro dietro il menu */
+    .menu-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 60;
+    }
+    .menu-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Drawer del menu */
+    nav.drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: min(340px, 86vw);
+      background: var(--card);
+      border-left: 1px solid var(--border);
+      transform: translateX(100%);
+      transition: transform 220ms ease;
+      z-index: 70;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    nav.drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-head h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .close-btn {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .nav-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+    .nav-list a {
+      display: block;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      background: #fff;
+      transition: background 150ms ease, transform 150ms ease;
+    }
+    .nav-list a:hover {
+      background: #f4f4f4;
+      transform: translateY(-1px);
+    }
+
+    .nav-note {
+      margin-top: auto;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* =========================
+       CONTENUTO
+       ========================= */
     main {
-      max-width: 720px;
-      margin: auto;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px 16px 56px;
     }
 
-    h1 {
+    /* Spazio per evitare che lo sticky header copra i titoli quando scrolli con anchor */
+    section {
+      scroll-margin-top: calc(var(--header-h) + 18px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      margin: 14px 0;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.03);
+    }
+
+    .hero {
       text-align: center;
-      margin-bottom: 2.5rem;
-      font-weight: 500;
+      padding: 34px 18px;
     }
-
-    h2 {
-      margin-top: 3rem;
-      font-weight: 500;
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      font-weight: 650;
+      letter-spacing: 0.2px;
     }
-
-    p {
-      margin-bottom: 1.4rem;
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
     }
 
     .quote {
-      text-align: center;
+      margin-top: 16px;
       font-style: italic;
-      margin: 2.5rem 0;
+      color: #333;
     }
 
-    img {
-      max-width: 100%;
-      border-radius: 8px;
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      font-weight: 650;
     }
 
+    .muted { color: var(--muted); }
+
+    /* =========================
+       APPARIZIONE GRADUALE
+       - le sezioni partono "nascoste"
+       - quando entrano in viewport, diventano visibili
+       ========================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 550ms ease, transform 550ms ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Rispetto preferenze: se l'utente ha "riduci animazioni", le togliamo */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .menu-backdrop, nav.drawer { transition: none; }
+    }
+
+    /* =========================
+       GALLERIA IMMAGINI
+       ========================= */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .thumb {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      cursor: pointer;
+      display: block;
+      aspect-ratio: 1 / 1;
+      position: relative;
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.02);
+      transition: transform 180ms ease;
+    }
+    .thumb:hover img {
+      transform: scale(1.06);
+    }
+
+    /* =========================
+       LIGHTBOX (immagine grande)
+       ========================= */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none; /* nascosto di default */
+    }
+    .lightbox.open {
+      display: grid;
+      place-items: center;
+    }
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+    .lightbox.open .lightbox-backdrop {
+      opacity: 1;
+    }
+    .lightbox-content {
+      position: relative;
+      z-index: 2;
+      width: min(920px, 92vw);
+      max-height: 86vh;
+      background: #111;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      transform: translateY(6px);
+      opacity: 0;
+      transition: opacity 200ms ease, transform 200ms ease;
+    }
+    .lightbox.open .lightbox-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .lightbox-content img {
+      width: 100%;
+      height: 100%;
+      max-height: 86vh;
+      object-fit: contain;
+      display: block;
+      background: #111;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 3;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+    }
+
+    /* =========================
+       FOOTER
+       ========================= */
     footer {
       text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-      margin-top: 4rem;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 22px;
+    }
+
+    /* Piccolo badge per mostrare l'URL QR (facoltativo) */
+    .qr-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      background: #fff;
+      font-size: 12px;
+      color: var(--muted);
     }
   </style>
 </head>
 
 <body>
-  <main>
+  <!-- =========================
+       HEADER
+       ========================= -->
+  <header>
+    <div class="header-inner">
+      <div class="brand" aria-label="Titolo pagina">
+        <div class="title">In memoria</div>
+        <div class="subtitle">Filippo Masi Trevisini</div>
+      </div>
 
-    <h1>In memoria di Filippo Masi Trevisini</h1>
+      <!-- Bottone per aprire il menu -->
+      <button class="burger" id="openMenuBtn" type="button" aria-label="Apri menu" aria-controls="drawerNav" aria-expanded="false">
+        <span class="burger-lines" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="burger-label">Menu</span>
+      </button>
+    </div>
+  </header>
 
-    <p>
-      Questa pagina è dedicata a Filippo Masi Trevisini.
-      È un luogo di memoria, pensato per chi passa di qui,
-      per chi si ferma un momento, per chi sente il bisogno di ricordare.
-    </p>
+  <!-- Overlay dietro il menu (cliccabile per chiudere) -->
+  <div class="menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
 
-    <p>
-      Non nasce come uno spazio pubblico nel senso tradizionale,
-      ma come un punto silenzioso e accessibile,
-      dove il ricordo può continuare a esistere nel tempo.
-    </p>
-
-    <div class="quote">
-      “tanto tutto poi ritorna.”
+  <!-- =========================
+       MENU A SCOMPARSA (DRAWER)
+       ========================= -->
+  <nav class="drawer" id="drawerNav" aria-label="Navigazione sezioni">
+    <div class="drawer-head">
+      <h2>Sezioni</h2>
+      <button class="close-btn" id="closeMenuBtn" type="button" aria-label="Chiudi menu">Chiudi</button>
     </div>
 
-    <h2>Un luogo di memoria</h2>
-
-    <p>
-      Questa pagina è raggiungibile tramite un QR code
-      posizionato accanto all’albero dedicato a Filippo.
-      È pensata per accompagnare quel gesto semplice:
-      fermarsi, leggere, ricordare.
-    </p>
-
-    <p>
-      Le parole qui presenti non hanno la pretesa di spiegare,
-      ma solo di custodire un pensiero, un nome,
-      una presenza che continua in altre forme.
-    </p>
-
     <!--
-    <h2>Immagini</h2>
-    <p>
-      In futuro potranno essere aggiunte immagini o altri contenuti,
-      se e quando lo si sentirà giusto.
-    </p>
-
-    <img src="images/filippo.jpg" alt="Filippo Masi Trevisini">
+      Qui definisci le voci del menu.
+      Ogni voce punta a un id di sezione (#in-memoria, #pensiero, ecc.).
     -->
+    <ul class="nav-list">
+      <li><a href="#in-memoria" class="nav-link">In memoria</a></li>
+      <li><a href="#pensiero" class="nav-link">Un pensiero</a></li>
+      <li><a href="#immagini" class="nav-link">Immagini</a></li>
+      <li><a href="#musica" class="nav-link">Musica</a></li>
+      <li><a href="#link" class="nav-link">Link / Contatti</a></li>
+    </ul>
 
-    <!--
-    <h2>Video</h2>
-    <iframe width="100%" height="315"
-      src="https://www.youtube.com/embed/ID_VIDEO"
-      frameborder="0"
-      allowfullscreen>
-    </iframe>
-    -->
+    <div class="nav-note">
+      Suggerimento: puoi personalizzare i nomi delle sezioni e l’ordine modificando questo elenco.
+    </div>
+  </nav>
+
+  <!-- =========================
+       CONTENUTO PRINCIPALE
+       ========================= -->
+  <main>
+
+    <!-- HERO -->
+    <section class="hero reveal" id="in-memoria">
+      <h1>In memoria di Filippo Masi Trevisini</h1>
+      <p>
+        Questa pagina è dedicata a Filippo. Un luogo di memoria e di ricordo,
+        accessibile tramite QR code accanto all’albero a lui dedicato.
+      </p>
+      <p class="quote">“tanto tutto poi ritorna.”</p>
+
+      <div class="qr-badge">
+        QR: <span class="muted">https://filippomasitrevisini.org/qr</span>
+      </div>
+    </section>
+
+    <!-- UN PENSIERO -->
+    <section class="reveal" id="pensiero">
+      <h2>Un pensiero</h2>
+      <p>
+        Qui puoi inserire un testo più personale e completo. L’idea è che non sia un “sito” nel senso classico,
+        ma un punto silenzioso dove fermarsi un momento.
+      </p>
+      <p>
+        Puoi aggiungere o cambiare questo testo quando vuoi: fai una modifica su GitHub,
+        premi “Commit”, e Cloudflare Pages aggiorna automaticamente la pagina.
+      </p>
+      <p class="muted">
+        (Suggerimento tecnico: se un giorno vuoi rendere l’URL ancora più pulito, possiamo mantenere tutto sotto /memoria/.)
+      </p>
+    </section>
+
+    <!-- IMMAGINI -->
+    <section class="reveal" id="immagini">
+      <h2>Immagini</h2>
+      <p class="muted">
+        Metti le foto nella cartella <strong>/images/</strong> e aggiorna la lista <code>GALLERY_IMAGES</code> nel JavaScript qui sotto.
+        Per iniziare: 5–6 immagini vanno benissimo.
+      </p>
+
+      <div class="gallery-grid" id="galleryGrid" aria-label="Galleria immagini">
+        <!-- Le miniature vengono generate via JavaScript -->
+      </div>
+    </section>
+
+    <!-- MUSICA (Spotify embed) -->
+    <section class="reveal" id="musica">
+      <h2>Musica</h2>
+      <p class="muted">
+        Qui puoi inserire una playlist Spotify pubblica. Per ora c’è un placeholder: quando hai il link,
+        sostituisci <code>ID_PLAYLIST</code> nell’iframe.
+      </p>
+
+      <!-- Spotify embed placeholder -->
+      <iframe style="border-radius:12px"
+        src="https://open.spotify.com/embed/playlist/ID_PLAYLIST"
+        width="100%" height="152" frameborder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"></iframe>
+    </section>
+
+    <!-- LINK / CONTATTI -->
+    <section class="reveal" id="link">
+      <h2>Link / Contatti</h2>
+      <p>
+        Se vuoi, qui puoi inserire link esterni (es. un video, una raccolta foto, un ringraziamento, ecc.).
+      </p>
+      <ul>
+        <li><span class="muted">Esempio:</span> <a href="#" onclick="return false;">Link esterno 1</a></li>
+        <li><span class="muted">Esempio:</span> <a href="#" onclick="return false;">Link esterno 2</a></li>
+      </ul>
+      <p class="muted">
+        Nota: evita troppi link. Meglio pochi, scelti, e coerenti con il tono della pagina.
+      </p>
+    </section>
 
     <footer>
       <p>
-        Questa pagina è parte di un percorso di memoria
-        dedicato a Filippo Masi Trevisini.
+        Questa pagina è parte di un percorso di memoria dedicato a Filippo Masi Trevisini.
       </p>
     </footer>
 
   </main>
+
+  <!-- =========================
+       LIGHTBOX (overlay per immagine grande)
+       ========================= -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-content" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
+      <button class="lightbox-close" id="lightboxCloseBtn" type="button" aria-label="Chiudi immagine">Chiudi</button>
+      <img id="lightboxImg" src="" alt="">
+    </div>
+  </div>
+
+  <script>
+    /**
+     * =========================
+     * CONFIGURAZIONE GALLERIA
+     * =========================
+     * Metti le immagini in /images/ e aggiungi qui i nomi file.
+     * Consiglio: usa nomi semplici: 01.jpg, 02.jpg, ecc.
+     *
+     * Se vuoi miniature separate (più leggere), possiamo farlo,
+     * ma per 5–6 foto può andare bene anche usare direttamente le stesse immagini.
+     */
+    const GALLERY_IMAGES = [
+      { src: "/images/01.jpg", alt: "Foto 1" },
+      { src: "/images/02.jpg", alt: "Foto 2" },
+      { src: "/images/03.jpg", alt: "Foto 3" },
+      { src: "/images/04.jpg", alt: "Foto 4" },
+      { src: "/images/05.jpg", alt: "Foto 5" },
+      // { src: "/images/06.jpg", alt: "Foto 6" },
+    ];
+
+    /**
+     * =========================
+     * BURGER MENU (apri/chiudi)
+     * =========================
+     */
+    const openMenuBtn = document.getElementById("openMenuBtn");
+    const closeMenuBtn = document.getElementById("closeMenuBtn");
+    const drawerNav = document.getElementById("drawerNav");
+    const menuBackdrop = document.getElementById("menuBackdrop");
+
+    function openMenu() {
+      drawerNav.classList.add("open");
+      menuBackdrop.classList.add("open");
+      openMenuBtn.setAttribute("aria-expanded", "true");
+      // Mettiamo focus sul primo link del menu (accessibilità)
+      const firstLink = drawerNav.querySelector(".nav-link");
+      if (firstLink) firstLink.focus();
+      // Blocchiamo lo scroll del body quando il menu è aperto
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeMenu() {
+      drawerNav.classList.remove("open");
+      menuBackdrop.classList.remove("open");
+      openMenuBtn.setAttribute("aria-expanded", "false");
+      // Ripristiniamo lo scroll
+      document.body.style.overflow = "";
+      // Riportiamo focus al bottone burger
+      openMenuBtn.focus();
+    }
+
+    openMenuBtn.addEventListener("click", openMenu);
+    closeMenuBtn.addEventListener("click", closeMenu);
+    menuBackdrop.addEventListener("click", closeMenu);
+
+    // Chiudi menu con tasto ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && drawerNav.classList.contains("open")) {
+        closeMenu();
+      }
+    });
+
+    /**
+     * Quando clicchi su una voce del menu:
+     * - chiudiamo il drawer
+     * - lo scroll alla sezione lo fa già l'anchor link (smooth scroll via CSS)
+     */
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        closeMenu();
+      });
+    });
+
+    /**
+     * =========================
+     * APPARIZIONE GRADUALE SEZIONI
+     * =========================
+     * IntersectionObserver: quando la sezione entra in viewport, aggiungiamo la classe "visible".
+     * Se non supportato, mostriamo tutto subito.
+     */
+    (function setupReveal() {
+      const elements = document.querySelectorAll(".reveal");
+      if (!("IntersectionObserver" in window)) {
+        elements.forEach(el => el.classList.add("visible"));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            obs.unobserve(entry.target); // una volta visibile, non serve più osservare
+          }
+        });
+      }, { threshold: 0.12 });
+
+      elements.forEach(el => observer.observe(el));
+    })();
+
+    /**
+     * =========================
+     * GALLERIA + LIGHTBOX
+     * =========================
+     */
+    const galleryGrid = document.getElementById("galleryGrid");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxBackdrop = document.getElementById("lightboxBackdrop");
+    const lightboxCloseBtn = document.getElementById("lightboxCloseBtn");
+    const lightboxImg = document.getElementById("lightboxImg");
+
+    // Crea le miniature
+    function renderGallery() {
+      if (!galleryGrid) return;
+
+      // Se non ci sono immagini configurate, mostriamo un messaggio
+      if (!GALLERY_IMAGES.length) {
+        galleryGrid.innerHTML = "<p class='muted'>Nessuna immagine ancora.</p>";
+        return;
+      }
+
+      // Generiamo i thumbnail
+      const thumbsHtml = GALLERY_IMAGES.map((img, idx) => {
+        return `
+          <button class="thumb" type="button" data-idx="${idx}" aria-label="Apri immagine ${idx + 1}">
+            <img src="${img.src}" alt="${img.alt}">
+          </button>
+        `;
+      }).join("");
+
+      galleryGrid.innerHTML = thumbsHtml;
+
+      // Click su una miniatura -> apri lightbox
+      galleryGrid.querySelectorAll(".thumb").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.getAttribute("data-idx"));
+          openLightbox(idx);
+        });
+      });
+    }
+
+    function openLightbox(index) {
+      const img = GALLERY_IMAGES[index];
+      if (!img) return;
+
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden"; // blocca scroll sotto
+      lightboxCloseBtn.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      // Pulizia (non obbligatoria, ma carina)
+      lightboxImg.src = "";
+      lightboxImg.alt = "";
+    }
+
+    lightboxBackdrop.addEventListener("click", closeLightbox);
+    lightboxCloseBtn.addEventListener("click", closeLightbox);
+
+    // Chiudi lightbox con ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && lightbox.classList.contains("open")) {
+        closeLightbox();
+      }
+    });
+
+    // Avvio
+    renderGallery();
+  </script>
 </body>
 </html>
