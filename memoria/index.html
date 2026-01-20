@@ -31,6 +31,9 @@
       --shadow: 0 8px 24px rgba(0,0,0,0.06);
       --radius: 14px;
 
+      /* Rosso "Roma" (richiesto) */
+      --roma-red: #8A2533;
+
       /* Per scroll morbido + offset header */
       --header-h: 64px;
     }
@@ -38,7 +41,7 @@
     * { box-sizing: border-box; }
 
     html {
-      scroll-behavior: smooth; /* transizione morbida quando usi anchor link */
+      scroll-behavior: smooth;
     }
 
     body {
@@ -48,6 +51,9 @@
       background: var(--bg);
       color: var(--text);
     }
+
+    /* Micro-miglioria mobile: evita highlight blu su tap (iOS/Android) */
+    button, a { -webkit-tap-highlight-color: transparent; }
 
     a { color: inherit; }
 
@@ -90,7 +96,6 @@
       color: var(--muted);
     }
 
-    /* Bottone burger */
     .burger {
       appearance: none;
       border: 1px solid var(--border);
@@ -126,7 +131,6 @@
       color: var(--muted);
     }
 
-    /* Overlay scuro dietro il menu */
     .menu-backdrop {
       position: fixed;
       inset: 0;
@@ -141,7 +145,6 @@
       pointer-events: auto;
     }
 
-    /* Drawer del menu */
     nav.drawer {
       position: fixed;
       top: 0;
@@ -173,6 +176,7 @@
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.2px;
+      color: var(--roma-red);
     }
     .close-btn {
       border: 1px solid var(--border);
@@ -218,7 +222,6 @@
       padding: 28px 16px 56px;
     }
 
-    /* Spazio per evitare che lo sticky header copra i titoli quando scrolli con anchor */
     section {
       scroll-margin-top: calc(var(--header-h) + 18px);
       background: var(--card);
@@ -238,6 +241,7 @@
       font-size: 28px;
       font-weight: 650;
       letter-spacing: 0.2px;
+      color: var(--roma-red);
     }
     .hero p {
       margin: 0;
@@ -255,14 +259,13 @@
       margin: 0 0 10px;
       font-size: 18px;
       font-weight: 650;
+      color: var(--roma-red);
     }
 
     .muted { color: var(--muted); }
 
     /* =========================
        APPARIZIONE GRADUALE
-       - le sezioni partono "nascoste"
-       - quando entrano in viewport, diventano visibili
        ========================= */
     .reveal {
       opacity: 0;
@@ -274,15 +277,15 @@
       transform: translateY(0);
     }
 
-    /* Rispetto preferenze: se l'utente ha "riduci animazioni", le togliamo */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .reveal { opacity: 1; transform: none; transition: none; }
       .menu-backdrop, nav.drawer { transition: none; }
+      .lightbox-backdrop, .lightbox-content { transition: none; }
     }
 
     /* =========================
-       GALLERIA IMMAGINI
+       GALLERIA
        ========================= */
     .gallery-grid {
       display: grid;
@@ -318,13 +321,14 @@
     }
 
     /* =========================
-       LIGHTBOX (immagine grande)
+       LIGHTBOX
        ========================= */
     .lightbox {
       position: fixed;
       inset: 0;
       z-index: 90;
-      display: none; /* nascosto di default */
+      display: none;
+      touch-action: pan-y;
     }
     .lightbox.open {
       display: grid;
@@ -364,7 +368,11 @@
       object-fit: contain;
       display: block;
       background: #111;
+      user-select: none;
+      -webkit-user-drag: none;
+      touch-action: pan-y;
     }
+
     .lightbox-close {
       position: absolute;
       top: 10px;
@@ -379,6 +387,67 @@
       backdrop-filter: blur(6px);
     }
 
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      border-radius: 999px;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      user-select: none;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .lightbox-prev { left: 10px; }
+    .lightbox-next { right: 10px; }
+
+    @media (max-width: 420px) {
+      .lightbox-prev { left: 6px; }
+      .lightbox-next { right: 6px; }
+    }
+
+    /* Barra didascalia in basso al lightbox */
+    .lightbox-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      padding: 10px 12px;
+      background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.0));
+      color: #fff;
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .caption-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .caption-count {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+    .caption-text {
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
     /* =========================
        FOOTER
        ========================= */
@@ -389,7 +458,6 @@
       margin-top: 22px;
     }
 
-    /* Piccolo badge per mostrare l'URL QR (facoltativo) */
     .qr-badge {
       display: inline-block;
       margin-top: 10px;
@@ -404,9 +472,6 @@
 </head>
 
 <body>
-  <!-- =========================
-       HEADER
-       ========================= -->
   <header>
     <div class="header-inner">
       <div class="brand" aria-label="Titolo pagina">
@@ -414,7 +479,6 @@
         <div class="subtitle">Filippo Masi Trevisini</div>
       </div>
 
-      <!-- Bottone per aprire il menu -->
       <button class="burger" id="openMenuBtn" type="button" aria-label="Apri menu" aria-controls="drawerNav" aria-expanded="false">
         <span class="burger-lines" aria-hidden="true">
           <span></span><span></span><span></span>
@@ -424,22 +488,14 @@
     </div>
   </header>
 
-  <!-- Overlay dietro il menu (cliccabile per chiudere) -->
   <div class="menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
 
-  <!-- =========================
-       MENU A SCOMPARSA (DRAWER)
-       ========================= -->
   <nav class="drawer" id="drawerNav" aria-label="Navigazione sezioni">
     <div class="drawer-head">
       <h2>Sezioni</h2>
       <button class="close-btn" id="closeMenuBtn" type="button" aria-label="Chiudi menu">Chiudi</button>
     </div>
 
-    <!--
-      Qui definisci le voci del menu.
-      Ogni voce punta a un id di sezione (#in-memoria, #pensiero, ecc.).
-    -->
     <ul class="nav-list">
       <li><a href="#in-memoria" class="nav-link">In memoria</a></li>
       <li><a href="#pensiero" class="nav-link">Un pensiero</a></li>
@@ -453,12 +509,7 @@
     </div>
   </nav>
 
-  <!-- =========================
-       CONTENUTO PRINCIPALE
-       ========================= -->
   <main>
-
-    <!-- HERO -->
     <section class="hero reveal" id="in-memoria">
       <h1>In memoria di Filippo Masi Trevisini</h1>
       <p>
@@ -472,7 +523,6 @@
       </div>
     </section>
 
-    <!-- UN PENSIERO -->
     <section class="reveal" id="pensiero">
       <h2>Un pensiero</h2>
       <p>
@@ -488,7 +538,6 @@
       </p>
     </section>
 
-    <!-- IMMAGINI -->
     <section class="reveal" id="immagini">
       <h2>Immagini</h2>
       <p class="muted">
@@ -496,12 +545,9 @@
         Per iniziare: 5–6 immagini vanno benissimo.
       </p>
 
-      <div class="gallery-grid" id="galleryGrid" aria-label="Galleria immagini">
-        <!-- Le miniature vengono generate via JavaScript -->
-      </div>
+      <div class="gallery-grid" id="galleryGrid" aria-label="Galleria immagini"></div>
     </section>
 
-    <!-- MUSICA (Spotify embed) -->
     <section class="reveal" id="musica">
       <h2>Musica</h2>
       <p class="muted">
@@ -509,7 +555,6 @@
         sostituisci <code>ID_PLAYLIST</code> nell’iframe.
       </p>
 
-      <!-- Spotify embed placeholder -->
       <iframe style="border-radius:12px"
         src="https://open.spotify.com/embed/playlist/ID_PLAYLIST"
         width="100%" height="152" frameborder="0"
@@ -518,7 +563,6 @@
         loading="lazy"></iframe>
     </section>
 
-    <!-- LINK / CONTATTI -->
     <section class="reveal" id="link">
       <h2>Link / Contatti</h2>
       <p>
@@ -538,17 +582,26 @@
         Questa pagina è parte di un percorso di memoria dedicato a Filippo Masi Trevisini.
       </p>
     </footer>
-
   </main>
 
-  <!-- =========================
-       LIGHTBOX (overlay per immagine grande)
-       ========================= -->
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+
     <div class="lightbox-content" role="dialog" aria-modal="true" aria-label="Immagine ingrandita">
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrevBtn" type="button" aria-label="Foto precedente">‹</button>
+      <button class="lightbox-nav lightbox-next" id="lightboxNextBtn" type="button" aria-label="Foto successiva">›</button>
+
       <button class="lightbox-close" id="lightboxCloseBtn" type="button" aria-label="Chiudi immagine">Chiudi</button>
+
       <img id="lightboxImg" src="" alt="">
+
+      <!-- Didascalia + contatore -->
+      <div class="lightbox-caption" aria-live="polite">
+        <div class="caption-left">
+          <div class="caption-count" id="captionCount">Foto 1/1</div>
+          <div class="caption-text" id="captionText">(didascalia…)</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -557,26 +610,44 @@
      * =========================
      * CONFIGURAZIONE GALLERIA
      * =========================
-     * Metti le immagini in /images/ e aggiungi qui i nomi file.
-     * Consiglio: usa nomi semplici: 01.jpg, 02.jpg, ecc.
-     *
-     * Se vuoi miniature separate (più leggere), possiamo farlo,
-     * ma per 5–6 foto può andare bene anche usare direttamente le stesse immagini.
+     * Aggiungi il campo "caption" con la didascalia che vuoi mostrare nel lightbox.
      */
     const GALLERY_IMAGES = [
-      { src: "/images/01.jpg", alt: "Foto 1" },
-      { src: "/images/02.jpg", alt: "Foto 2" },
-      { src: "/images/03.jpg", alt: "Foto 3" },
-      { src: "/images/04.jpg", alt: "Foto 4" },
-      { src: "/images/05.jpg", alt: "Foto 5" },
-      // { src: "/images/06.jpg", alt: "Foto 6" },
+      { src: "/images/01.jpg", alt: "Foto 1", caption: "(didascalia per Foto 1)" },
+      { src: "/images/02.jpg", alt: "Foto 2", caption: "(didascalia per Foto 2)" },
+      { src: "/images/03.jpg", alt: "Foto 3", caption: "(didascalia per Foto 3)" },
+      { src: "/images/04.jpg", alt: "Foto 4", caption: "(didascalia per Foto 4)" },
+      { src: "/images/05.jpg", alt: "Foto 5", caption: "(didascalia per Foto 5)" },
     ];
 
     /**
      * =========================
-     * BURGER MENU (apri/chiudi)
+     * SCROLL LOCK ROBUSTO (iOS-friendly)
+     * ========================= */
+    let _scrollY = 0;
+
+    function lockScroll() {
+      _scrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${_scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    }
+
+    function unlockScroll() {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, _scrollY);
+    }
+
+    /**
      * =========================
-     */
+     * BURGER MENU (apri/chiudi)
+     * ========================= */
     const openMenuBtn = document.getElementById("openMenuBtn");
     const closeMenuBtn = document.getElementById("closeMenuBtn");
     const drawerNav = document.getElementById("drawerNav");
@@ -586,20 +657,19 @@
       drawerNav.classList.add("open");
       menuBackdrop.classList.add("open");
       openMenuBtn.setAttribute("aria-expanded", "true");
-      // Mettiamo focus sul primo link del menu (accessibilità)
+
       const firstLink = drawerNav.querySelector(".nav-link");
       if (firstLink) firstLink.focus();
-      // Blocchiamo lo scroll del body quando il menu è aperto
-      document.body.style.overflow = "hidden";
+
+      lockScroll();
     }
 
     function closeMenu() {
       drawerNav.classList.remove("open");
       menuBackdrop.classList.remove("open");
       openMenuBtn.setAttribute("aria-expanded", "false");
-      // Ripristiniamo lo scroll
-      document.body.style.overflow = "";
-      // Riportiamo focus al bottone burger
+
+      unlockScroll();
       openMenuBtn.focus();
     }
 
@@ -607,18 +677,12 @@
     closeMenuBtn.addEventListener("click", closeMenu);
     menuBackdrop.addEventListener("click", closeMenu);
 
-    // Chiudi menu con tasto ESC
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && drawerNav.classList.contains("open")) {
         closeMenu();
       }
     });
 
-    /**
-     * Quando clicchi su una voce del menu:
-     * - chiudiamo il drawer
-     * - lo scroll alla sezione lo fa già l'anchor link (smooth scroll via CSS)
-     */
     document.querySelectorAll(".nav-link").forEach((link) => {
       link.addEventListener("click", () => {
         closeMenu();
@@ -628,10 +692,7 @@
     /**
      * =========================
      * APPARIZIONE GRADUALE SEZIONI
-     * =========================
-     * IntersectionObserver: quando la sezione entra in viewport, aggiungiamo la classe "visible".
-     * Se non supportato, mostriamo tutto subito.
-     */
+     * ========================= */
     (function setupReveal() {
       const elements = document.querySelectorAll(".reveal");
       if (!("IntersectionObserver" in window)) {
@@ -643,7 +704,7 @@
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
-            obs.unobserve(entry.target); // una volta visibile, non serve più osservare
+            obs.unobserve(entry.target);
           }
         });
       }, { threshold: 0.12 });
@@ -654,25 +715,34 @@
     /**
      * =========================
      * GALLERIA + LIGHTBOX
-     * =========================
-     */
+     * ========================= */
     const galleryGrid = document.getElementById("galleryGrid");
     const lightbox = document.getElementById("lightbox");
     const lightboxBackdrop = document.getElementById("lightboxBackdrop");
     const lightboxCloseBtn = document.getElementById("lightboxCloseBtn");
     const lightboxImg = document.getElementById("lightboxImg");
+    const lightboxPrevBtn = document.getElementById("lightboxPrevBtn");
+    const lightboxNextBtn = document.getElementById("lightboxNextBtn");
 
-    // Crea le miniature
+    // Didascalia (elementi UI)
+    const captionCount = document.getElementById("captionCount");
+    const captionText = document.getElementById("captionText");
+
+    let currentIndex = -1;
+
+    // Swipe state
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwiping = false;
+
     function renderGallery() {
       if (!galleryGrid) return;
 
-      // Se non ci sono immagini configurate, mostriamo un messaggio
       if (!GALLERY_IMAGES.length) {
         galleryGrid.innerHTML = "<p class='muted'>Nessuna immagine ancora.</p>";
         return;
       }
 
-      // Generiamo i thumbnail
       const thumbsHtml = GALLERY_IMAGES.map((img, idx) => {
         return `
           <button class="thumb" type="button" data-idx="${idx}" aria-label="Apri immagine ${idx + 1}">
@@ -683,7 +753,6 @@
 
       galleryGrid.innerHTML = thumbsHtml;
 
-      // Click su una miniatura -> apri lightbox
       galleryGrid.querySelectorAll(".thumb").forEach(btn => {
         btn.addEventListener("click", () => {
           const idx = Number(btn.getAttribute("data-idx"));
@@ -692,37 +761,118 @@
       });
     }
 
-    function openLightbox(index) {
+    function updateCaption() {
+      if (currentIndex < 0) return;
+      const img = GALLERY_IMAGES[currentIndex];
+      captionCount.textContent = `Foto ${currentIndex + 1}/${GALLERY_IMAGES.length}`;
+      captionText.textContent = img.caption || "(didascalia…)";
+    }
+
+    function updateNavButtons() {
+      const disabled = GALLERY_IMAGES.length <= 1;
+      lightboxPrevBtn.disabled = disabled;
+      lightboxNextBtn.disabled = disabled;
+      lightboxPrevBtn.style.opacity = disabled ? "0.5" : "1";
+      lightboxNextBtn.style.opacity = disabled ? "0.5" : "1";
+      lightboxPrevBtn.style.cursor = disabled ? "not-allowed" : "pointer";
+      lightboxNextBtn.style.cursor = disabled ? "not-allowed" : "pointer";
+    }
+
+    function setLightboxImage(index) {
       const img = GALLERY_IMAGES[index];
       if (!img) return;
 
+      currentIndex = index;
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
 
+      updateCaption();
+      updateNavButtons();
+    }
+
+    function openLightbox(index) {
+      setLightboxImage(index);
+
       lightbox.classList.add("open");
       lightbox.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden"; // blocca scroll sotto
+
+      lockScroll();
       lightboxCloseBtn.focus();
     }
 
     function closeLightbox() {
       lightbox.classList.remove("open");
       lightbox.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
-      // Pulizia (non obbligatoria, ma carina)
+
+      unlockScroll();
+
       lightboxImg.src = "";
       lightboxImg.alt = "";
+      currentIndex = -1;
+
+      captionCount.textContent = "";
+      captionText.textContent = "";
+    }
+
+    function showPrev() {
+      if (currentIndex < 0 || GALLERY_IMAGES.length <= 1) return;
+      const nextIndex = (currentIndex - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length;
+      setLightboxImage(nextIndex);
+    }
+
+    function showNext() {
+      if (currentIndex < 0 || GALLERY_IMAGES.length <= 1) return;
+      const nextIndex = (currentIndex + 1) % GALLERY_IMAGES.length;
+      setLightboxImage(nextIndex);
     }
 
     lightboxBackdrop.addEventListener("click", closeLightbox);
     lightboxCloseBtn.addEventListener("click", closeLightbox);
 
-    // Chiudi lightbox con ESC
+    lightboxPrevBtn.addEventListener("click", showPrev);
+    lightboxNextBtn.addEventListener("click", showNext);
+
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && lightbox.classList.contains("open")) {
-        closeLightbox();
-      }
+      if (!lightbox.classList.contains("open")) return;
+
+      if (e.key === "Escape") return closeLightbox();
+      if (e.key === "ArrowLeft") return showPrev();
+      if (e.key === "ArrowRight") return showNext();
     });
+
+    // Swipe navigation
+    function onTouchStart(e) {
+      if (!lightbox.classList.contains("open")) return;
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      isSwiping = true;
+    }
+
+    function onTouchEnd(e) {
+      if (!isSwiping) return;
+      isSwiping = false;
+
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t) return;
+
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+
+      if (absX < 40) return;
+      if (absY > absX * 0.8) return;
+
+      if (dx < 0) showNext();
+      else showPrev();
+    }
+
+    lightbox.addEventListener("touchstart", onTouchStart, { passive: true });
+    lightbox.addEventListener("touchend", onTouchEnd, { passive: true });
 
     // Avvio
     renderGallery();
