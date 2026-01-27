@@ -483,6 +483,53 @@
       font-size: 12px;
       color: var(--muted);
     }
+
+    /* =========================
+   FORM CONTATTI
+   ========================= */
+
+form.memorial-form {
+  display: grid;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.memorial-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.memorial-form textarea:focus {
+  outline: none;
+  border-color: var(--roma-red);
+}
+
+.memorial-form button {
+  align-self: flex-start;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--roma-red);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.memorial-form button:hover {
+  opacity: 0.95;
+}
+
+/* Honeypot invisibile */
+.hp-field {
+  display: none !important;
+}
+
   </style>
 </head>
 
@@ -923,16 +970,61 @@
         da destinare a "Associazione Volontari Ospedalieri Fiumicino", IBAN: IT25Q0832749630000000003108.
         </span></li>
         <li><a href="https://www.ospedalebambinogesu.it/centro-cure-palliative-pediatriche-138506/" target="_blank" rel="noopener noreferrer">
-        Centro Cure Palliative Pediatriche Bambino Gesù </a><span class="muted">: centro sito a Passoscuro, nel comune di Fiumicino, 
+        Centro Cure Palliative Pediatriche Bambino Gesù </a><span class="muted">: centro di cura situato a Passoscuro, nel comune di Fiumicino, 
         dedicato all’accoglienza di bambini e adolescenti con malattie rare, inguaribili, ad alta complessità assistenziale, 
-        che garantisce la presa in carico del paziente e di tutto il nucleo familiare.  
+        che garantisce la presa in carico del paziente e di tutto il nucleo familiare.<br>
+        In questa <a href="https://www.officiumroma.it/wp-content/uploads/2024/06/Il-Centro-per-le-cure-palliative-pediatriche-di-Passoscuro-F-Petreschi.pdf" target="_blank" rel="noopener noreferrer">
+        presentazione</a> a cura della dottoressa Francesca Petreschi (colei che ha avuto Filippo in carico presso il CCPP) 
+        viene chiarito il ruolo delle cure palliative, in particolare quelle pediatriche, e vengono smentite alcune false credenze su di esse.
         </span></li>
-        <li><span class="muted">PCH:</span> <a href="#" onclick="return false;">Link esterno 3</a></li>
-        <li><span class="muted">Esempio 4:</span> <a href="#" onclick="return false;">Link esterno 4</a></li>
+         <li><a href="https://www.orpha.net/en/disease/detail/166063" target="_blank" rel="noopener noreferrer">
+        PCH4 </a><span class="muted">: una descrizione dell'ipoplasia pontocerebellare di tipo 4 (PCH4) dal sito scientifico di riferimento per 
+        le malattie rare (orpha.net). 
+        </span></li>
       </ul>
       
     </section>
 
+
+    <section class="reveal" id="contatti">
+
+  <h2>Contatti</h2>
+
+  <p>
+    Se desideri lasciare un pensiero, un ricordo o un saluto per Filippo e la sua famiglia,
+    puoi farlo tramite questo spazio.
+  </p>
+
+  <form
+    class="memorial-form"
+    action="https://formspree.io/f/mkorekyr"
+    method="POST">
+
+    <!-- Honeypot anti-spam -->
+    <input type="text" name="azienda" class="hp-field" tabindex="-1" autocomplete="off">
+
+    <textarea
+      name="messaggio"
+      rows="5"
+      placeholder="Scrivi qui il tuo messaggio…"
+      required></textarea>
+
+    <!-- redirect dopo invio -->
+    <input type="hidden" name="_redirect" value="https://filippomasitrevisini.org/memoria/grazie.html">
+
+    <button type="submit">Invia</button>
+
+    <p class="muted">
+      I messaggi inviati tramite questo modulo verranno recapitati
+      direttamente alla famiglia e non saranno pubblicati sul sito.
+    </p>
+
+  </form>
+
+</section>
+
+
+    
     <footer>
       <p>
         Questa pagina è parte di un percorso di memoria dedicato a Filippo. L'albero su cui è apposto il QR code è stato piantato il 14 febbraio 2026, ad un anno dalla sua nascita.
