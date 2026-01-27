@@ -494,6 +494,19 @@ form.memorial-form {
   max-width: 600px;
 }
 
+.memorial-form .row {
+  display: grid;
+  gap: 10px;
+}
+
+@media (min-width: 640px) {
+  .memorial-form .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.memorial-form input[type="text"],
+.memorial-form input[type="email"],
 .memorial-form textarea {
   width: 100%;
   padding: 12px 14px;
@@ -502,9 +515,12 @@ form.memorial-form {
   font-family: inherit;
   font-size: 14px;
   line-height: 1.6;
-  resize: vertical;
+  background: #fff;
 }
 
+.memorial-form textarea { resize: vertical; }
+
+.memorial-form input:focus,
 .memorial-form textarea:focus {
   outline: none;
   border-color: var(--roma-red);
@@ -521,14 +537,17 @@ form.memorial-form {
   cursor: pointer;
 }
 
-.memorial-form button:hover {
-  opacity: 0.95;
+.memorial-form button:hover { opacity: 0.95; }
+
+.form-status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
 }
 
 /* Honeypot invisibile */
-.hp-field {
-  display: none !important;
-}
+.hp-field { display: none !important; }
+
 
   </style>
 </head>
@@ -986,8 +1005,7 @@ form.memorial-form {
     </section>
 
 
-    <section class="reveal" id="contatti">
-
+   <section class="reveal" id="contatti">
   <h2>Contatti</h2>
 
   <p>
@@ -996,12 +1014,18 @@ form.memorial-form {
   </p>
 
   <form
+    id="contactForm"
     class="memorial-form"
     action="https://formspree.io/f/mkorekyr"
     method="POST">
 
-    <!-- Honeypot anti-spam -->
+    <!-- Honeypot anti-spam (non compilare) -->
     <input type="text" name="azienda" class="hp-field" tabindex="-1" autocomplete="off">
+
+    <div class="row">
+      <input type="text" name="nome" placeholder="Il tuo nome (opzionale)" autocomplete="name">
+      <input type="email" name="email" placeholder="La tua email (opzionale)" autocomplete="email">
+    </div>
 
     <textarea
       name="messaggio"
@@ -1009,19 +1033,16 @@ form.memorial-form {
       placeholder="Scrivi qui il tuo messaggio…"
       required></textarea>
 
-    <!-- redirect dopo invio -->
-    <input type="hidden" name="_redirect" value="https://filippomasitrevisini.org/memoria/grazie.html">
-
-    <button type="submit">Invia</button>
+    <button type="submit" id="contactSubmit">Invia</button>
 
     <p class="muted">
-      I messaggi inviati tramite questo modulo verranno recapitati
-      direttamente alla famiglia e non saranno pubblicati sul sito.
+      Se lasci un contatto, potremo risponderti. I messaggi non saranno pubblicati sul sito.
     </p>
 
+    <p class="form-status" id="formStatus" aria-live="polite"></p>
   </form>
-
 </section>
+
 
 
     
@@ -1324,6 +1345,51 @@ form.memorial-form {
 
     // Avvio
     renderGallery();
+
+(function setupContactForm() {
+  const form = document.getElementById("contactForm");
+  if (!form) return;
+
+  const statusEl = document.getElementById("formStatus");
+  const submitBtn = document.getElementById("contactSubmit");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (statusEl) statusEl.textContent = "Invio in corso…";
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      const data = new FormData(form);
+
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: data,
+        headers: { "Accept": "application/json" }
+      });
+
+      if (res.ok) {
+        window.location.href = "/memoria/grazie.html";
+        return;
+      }
+
+      let msg = "Errore durante l’invio. Riprova tra poco.";
+      try {
+        const out = await res.json();
+        if (out?.errors?.length) msg = out.errors.map(e => e.message).join(" ");
+      } catch (_) {}
+
+      if (statusEl) statusEl.textContent = msg;
+      if (submitBtn) submitBtn.disabled = false;
+
+    } catch (err) {
+      if (statusEl) statusEl.textContent = "Connessione non disponibile. Riprova tra poco.";
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+})();
+
+    
   </script>
 </body>
 </html>
