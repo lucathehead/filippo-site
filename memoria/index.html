@@ -595,6 +595,31 @@ form.memorial-form {
     line-height: 1.35;
   }
 }
+.map-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+}
+
+.btn-map{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background: var(--roma-red);
+  color:#fff;
+  text-decoration:none;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.btn-map.secondary{
+  background:#fff;
+  color:var(--text);
+}
 
 
   </style>
@@ -651,6 +676,31 @@ form.memorial-form {
       <p class="quote">“Tanto tutto poi ritorna.”</p>
    
     </section>
+<section class="reveal" id="dove">
+  <h2>Dove si trova l’ulivo</h2>
+
+  <p class="muted">
+    Parco XXV Novembre 1884 (Parco “Pietro Rosa”), Ostia.
+  </p>
+
+  <div class="map-actions">
+    <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=LAT,LNG"
+       target="_blank" rel="noopener noreferrer">
+      Apri indicazioni su Google Maps
+    </a>
+
+    <a class="btn-map secondary" href="https://maps.apple.com/?q=LAT,LNG"
+       target="_blank" rel="noopener noreferrer">
+      Apri su Apple Maps
+    </a>
+
+    <button class="btn-map secondary" type="button" id="copyCoordsBtn">
+      Copia coordinate
+    </button>
+  </div>
+
+  <p class="form-status" id="copyStatus" aria-live="polite"></p>
+</section>
 
     <section class="reveal" id="filippo">
 
