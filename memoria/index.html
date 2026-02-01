@@ -1501,7 +1501,23 @@ form.memorial-form {
     }
   });
 })();
+  (function setupCopyCoords(){
+    const btn = document.getElementById("copyCoordsBtn");
+    const status = document.getElementById("copyStatus");
+    if(!btn) return;
 
+    const coords = "LAT,LNG"; // <-- sostituisci
+
+    btn.addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(coords);
+        if(status) status.textContent = "Coordinate copiate.";
+      }catch(e){
+        if(status) status.textContent = "Impossibile copiare: seleziona e copia manualmente.";
+      }
+      setTimeout(()=>{ if(status) status.textContent = ""; }, 2500);
+    });
+  })();
     
   </script>
 </body>
