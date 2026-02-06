@@ -1579,20 +1579,17 @@ form.memorial-form {
   const closeBtn = document.querySelector('.event-popup-close');
 
   // DATA FINE EVENTO (YYYY-MM-DD)
-  const EVENT_END_DATE = new Date('2026-02-15T23:59:59');
+  const EVENT_END_DATE = new Date('2026-02-14T23:59:59');
   const now = new Date();
 
   // Se l'evento è scaduto, non mostrare nulla
   if (now > EVENT_END_DATE) return;
 
-  // Mostra il popup solo se non è già stato visto
-  if (!localStorage.getItem('eventPopupSeen')) {
-    popup.style.display = 'flex';
-  }
+  // Mostra SEMPRE il popup
+  popup.style.display = 'flex';
 
   closeBtn.addEventListener('click', function () {
     popup.style.display = 'none';
-    localStorage.setItem('eventPopupSeen', 'true');
   });
 })();
 </script>
